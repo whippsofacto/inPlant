@@ -25,9 +25,9 @@ inPlant - Domestic Plant Monitoring System
 
 
 //inPlant data.SparkFun info
-//url: https://data.sparkfun.com/streams/XGy68EqOXRhZXarLpWRO
-//publicKey: XGy68EqOXRhZXarLpWRO
-//privateKey: 1JYwjNyVg9uPv8xXq1Ao
+//url: *****
+//publicKey: *****
+//privateKey: *****
 
 // Wifi Vars ---------------------------------------------------//
 char ssid[] = "***";     // network SSID
@@ -172,7 +172,7 @@ int lightSensor = analogRead(A3); //store the data for light in a variable
         Serial.println("connected to data.sparkfun");
         Serial.println();
         // Make a HTTP request:
-        temSpark.print("GET /input/XGy68EqOXRhZXarLpWRO?private_key=1JYwjNyVg9uPv8xXq1Ao&light=");
+        temSpark.print("GET /input/***myURL_&_PRIVATE_KEY_GO_HERE_***");
         temSpark.print(lightSensor);
         temSpark.print("&soilmoisture=");
         temSpark.print(soilSensor);
