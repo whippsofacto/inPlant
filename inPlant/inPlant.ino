@@ -20,7 +20,7 @@ inPlant - Domestic Plant Monitoring System
 
 //Timer Libraries -----------------------------------------------//
 //required to run functions cohesively without delay() method
-#include <Event.h> 
+#include <Event.h>
 #include <Timer.h>
 
 
@@ -30,19 +30,19 @@ inPlant - Domestic Plant Monitoring System
 //privateKey: 1JYwjNyVg9uPv8xXq1Ao
 
 // Wifi Vars ---------------------------------------------------//
-char ssid[] = "VM325540-2G";     // network SSID
-char pass[] = "xjqyhjux";        // network password
+char ssid[] = "***";     // network SSID
+char pass[] = "***";        // network password
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 
 // Telegram Creds ---------------------------------------------//
-const char BotToken[] = "311747348:AAHxfoQG2GVgN1aVS3ClOFcz47IqP4xMDmg";
+const char BotToken[] = "***";
 
 
 
 // Temboo Vars ------------------------------------------------//
 int numRuns = 1;   // Execution count, so this doesn't run forever
 int maxRuns = 150;   // Maximum number of times the Choreo should be executed
-String temp;   // Temp var to store choreo temperature info. 
+String temp;   // Temp var to store choreo temperature info.
 
 // Specify Client vars ----------------------------------------//
 WiFiClient temSpark; //Declare connection variable for WifiClient - Temboo and Sparkfun
@@ -57,16 +57,16 @@ Timer t; //Timer variable
 //Set-up ---------------------------------------------------------------------------//
 
 void setup() {
-Serial.begin(9600); // initialize serial communication at 9600 bits per second:                   
-delay(4000); // Wait 4 secs until the serial console is connected 
+Serial.begin(9600); // initialize serial communication at 9600 bits per second:
+delay(4000); // Wait 4 secs until the serial console is connected
 
   //Comment out of code for mains power deployment.
   //Wifi Library
   //Initialize serial and wait for port to open:
 
-/*  
+/*
   while (!Serial) {
-  ; 
+  ;
   //wait for serial port to connect. Needed for native USB port only
   }
 
@@ -93,13 +93,13 @@ while ( status != WL_CONNECTED) {
   // you're connected now, so print out the data:
   Serial.print("You're connected to the network");
   Serial.println();
-  
+
   // print the received signal strength:
   long rssi = WiFi.RSSI();
   Serial.print("signal strength (RSSI):");
   Serial.println(rssi);
   Serial.println();
-  
+
   //Telegram Keyboard
    // define Telegram keyboard row's
   const char* row_one[] = {"How's my plant doing?"};
@@ -113,7 +113,7 @@ while ( status != WL_CONNECTED) {
   senseInRoom();
   tembooTemp();
   sendReading();
-  
+
   //Timer ------------------------------------------------------------//
   int tickSense = t.every(200,senseInRoom); //sense every .2 of a second
   int tickTemboo = t.every(7200000,tembooTemp); //check for temperature every 2 hours
@@ -125,17 +125,17 @@ while ( status != WL_CONNECTED) {
 
 void loop() {
 
-  t.update(); //run the timer that contains the sketch functions  
+  t.update(); //run the timer that contains the sketch functions
 
 }
 
 // Sensing in the room ----------------------------------------------------------/
 
-void senseInRoom(){  
+void senseInRoom(){
 
 int soilSensor = analogRead(A0); //store the data for soil moisture in a variable
 int lightSensor = analogRead(A3);  //store the data for light in a variable
-  
+
 // print to serial the reading of the soilSensor
 Serial.print("Soil Moisture Reading: ");
 Serial.println(soilSensor);
@@ -147,7 +147,7 @@ if (soilSensor < 750) {
   Serial.println ("Soil Moisture Status: I'm thirsty, water me!");
   Serial.println();
   } else {
-    Serial.println ("Soil Moisture Status: Everything is cool!");  
+    Serial.println ("Soil Moisture Status: Everything is cool!");
     Serial.println();
       }
 
@@ -165,14 +165,14 @@ void sendReading() {
 
 int soilSensor = analogRead(A0); //store the data for soil moisture in a variable
 int lightSensor = analogRead(A3); //store the data for light in a variable
-  
+
     temSpark.connect("data.sparkfun.com", 80);
-    
+
     if (temSpark.connected()) {
         Serial.println("connected to data.sparkfun");
         Serial.println();
         // Make a HTTP request:
-        temSpark.print("GET /input/XGy68EqOXRhZXarLpWRO?private_key=1JYwjNyVg9uPv8xXq1Ao&light=");  
+        temSpark.print("GET /input/XGy68EqOXRhZXarLpWRO?private_key=1JYwjNyVg9uPv8xXq1Ao&light=");
         temSpark.print(lightSensor);
         temSpark.print("&soilmoisture=");
         temSpark.print(soilSensor);
@@ -191,7 +191,7 @@ int lightSensor = analogRead(A3); //store the data for light in a variable
 
 //---------- Temboo ------------------------------------------------------//
 void tembooTemp(){
- 
+
  if (numRuns <= maxRuns) {
     Serial.println("Running GetTemperature - Run #" + String(numRuns++));
 
@@ -216,7 +216,7 @@ void tembooTemp(){
 
     // Run the Choreo; when results are available, print them to serial
     GetTemperatureChoreo.run();
-    
+
     while(GetTemperatureChoreo.available()) {
       // read the name of the next output item
       String name = GetTemperatureChoreo.readStringUntil('\x1F');
@@ -235,15 +235,15 @@ void tembooTemp(){
   }
 
   Serial.println("\nWaiting...\n");
-    
-} 
+
+}
 
 void telegramBot(){
 
 int soilSensor = analogRead(A0);  //store the data for soil moisture in a variable
 int lightSensor = analogRead(A3); //store the data for light in a variable
 
-  
+
 message m = bot.getUpdates(); // Read new messages
 
 String temperature = "Current temp: "; // Temp String
@@ -252,7 +252,7 @@ String soilString = String(soilSensor); //Change the soil moisture to string for
 String lightString = String(lightSensor); //Change the light readings to string for Output
 
 
-  
+
  if (m.text.equals("Temp") || m.text.equals("/Temp")){
     Serial.println(m.text);
     bot.sendMessage(m.chat_id, temperature + thisString + "°C"); //if user types TEMP them send them the temp
@@ -261,18 +261,18 @@ String lightString = String(lightSensor); //Change the light readings to string 
       } else if (m.text.equals("Light") || m.text.equals("/Light")){
        bot.sendMessage(m.chat_id, "Current Light: " + lightString + "."); //If user types LIGHT send them the light
           } else if (m.text.equals("How's my plant doing?") || m.text.equals("/How")){
-              bot.sendMessage(m.chat_id, "Current Light: " + lightString + "." + "\n" 
+              bot.sendMessage(m.chat_id, "Current Light: " + lightString + "." + "\n"
                                          + "Current Soil: " + soilString + "." + "\n"
                                          +  temperature + thisString + "°C"
-                                         );  //If user types How's My Plant Doing? send them all the output. 
+                                         );  //If user types How's My Plant Doing? send them all the output.
             } else{
               //if the text is not one of the key phrases send this message
-               bot.sendMessage(m.chat_id, "...I don't recognise this command, please use keywords: \n /Temp \n /Soil \n /Light \n /How's\ my\ plant\ doing?",keyboard_one);                                                                  
+               bot.sendMessage(m.chat_id, "...I don't recognise this command, please use keywords: \n /Temp \n /Soil \n /Light \n /How's\ my\ plant\ doing?",keyboard_one);
                Serial.println("no new message"); //if nothing is happening print no new message to the serial monitor
-               
+
               }
 
-//  Library doesn't allow the ardunio to initiate a message from the bot to a user. It can only react to user input. 
+//  Library doesn't allow the ardunio to initiate a message from the bot to a user. It can only react to user input.
   if (soilSensor < 1000){
      bot.sendMessage("@testAccount","Current Soil: " + soilString + "." + "\n" + "Water Me!");
     }
@@ -281,6 +281,5 @@ String lightString = String(lightSensor); //Change the light readings to string 
 
  client.stop(); // stop the connection after each run.
 
- 
-}
 
+}
